@@ -1,0 +1,148 @@
+class Node:
+    def __init__(self,value):
+        self.value = value
+        self.next = None
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.len = 0
+
+    def __str__(self):
+        temp = self.head
+        res = ""
+        while temp is not None:
+            res += str(temp.value)
+            if temp.next is not None:
+                res += "-->"
+            temp = temp.next
+        return res
+
+    def prepend(self,value):
+        temp = Node(value)
+        if self.head is None :
+            self.head = temp
+            self.tail = temp
+        else:
+            temp.next = self.head
+            self.head = temp
+        self.len += 1
+
+
+    def append(self,value):
+        new_node = Node(value)
+        if self.head is None:
+            self.head = new_node
+            self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+        self.len += 1
+
+    def insert(self,index,value):
+        if index < 0 :
+            index = self.len + index
+        elif index > self.len :
+            index = self.len
+
+        new_node = Node(value)
+        if self.len == 0 :
+            self.head = new_node
+            self.tail = new_node
+        elif index == 0 :
+            new_node.next = self.head
+            self.head = new_node
+        else:
+            temp = self.head
+            for i in range(index-1):
+                temp = temp.next
+            new_node.next = temp.next
+            temp.next = new_node
+        self.len += 1
+
+    def traverse(self):
+        current = self.head
+        while current is not None:
+            print(current.value)
+            current = current.next
+
+    def search(self,value):
+        index = 0
+        current = self.head
+        while current is not None:
+            if current.value == value:
+                return index
+            index += 1
+            current = current.next
+        return False
+
+    def get(self,index):
+        if index < 0 :
+            index = self.len + index
+        if index < 0 or index >= self.len:
+            return None
+        current = self.head
+        for i in range(index):
+            current = current.next
+        return current
+
+    def set_value(self,index,value):
+        current = self.get(index)
+        if current:
+            current.value = value
+            return True
+        return False
+
+    def pop_first(self):
+        if self.len == 0 :
+            return None
+        first = self.head
+        if self.len == 1:
+            self.head = None
+            self.tail = None
+            self.len -= 1
+            return first
+        else:
+            self.head = self.head.next
+            first.next = None
+            self.len -= 1
+            return first
+
+    def pop(self):
+        if self.len == 0:
+            return None
+        elif self.len == 1:
+            popped = self.head
+            self.head = None
+            self.tail = None
+            self.len -= 1
+            return popped
+        last = self.tail
+        current = self.head
+        while current.next is not self.tail:
+            current = current.next
+        current.next = None
+        self.tail = current
+        self.len -= 1
+        return last
+
+    def remove(self,index):
+        if index >= self.len or index < 0 :
+            return None
+        elif index == 0 :
+            return self.pop_first()
+        if index == self.len - 1 :
+            return self.pop()
+
+        previous_node = self.get(index-1)
+        removed_node = previous_node.next
+        previous_node.next  = removed_node.next
+        removed_node.next = None
+        return removed_node
+
+    def delete_all(self):
+        self.head = None
+        self.tail = None
+        self.len = 0
